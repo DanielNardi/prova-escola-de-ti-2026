@@ -2,9 +2,9 @@
 
 # ALUNO
 
-Nome: Daniel Nardi
+Nome: Daniel Rodrigues Nardi
 
-RA: >>> PREENCHER <<<
+RA: 231592512
 
 Conta GitHub: @DanielNardi
 
