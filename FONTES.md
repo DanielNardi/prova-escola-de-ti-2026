@@ -16,7 +16,9 @@
 
 | # | URL | O que foi consultado | Onde aparece no entregável |
 | --- | --- | --- | --- |
-| — | | | |
+| — |https://chatgpt.com/share/6ac6d6c5-d1c4-83e9-a40e-ae3aa3ec0fb6 |Constituation ordem_exec| |
+
+| — |https://dontpad.com/prova_escola_ti |arquivos| |
 
 *(Ex.: `https://docs.oracle.com/...` → sintaxe de `Optional` → `plan.md` na
 seção de decisões. Esse link é ILUSTRATIVO — fora de linha numerada não

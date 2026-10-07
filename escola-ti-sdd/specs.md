@@ -11,15 +11,15 @@ Todos os endpoints consomem e produzem `application/json`. Consulte `constitutio
 **Endpoint:** `POST /bilhetes`
 
 **Body:**
-```json
+
 {"placa": "ABC1D23"}
-```
+
 Campo `entrada` (ISO-8601 com offset) é **opcional**. Quando presente, o bilhete registra aquele instante como horário de abertura; quando ausente, usa o instante atual do servidor.
 
 **Resposta de sucesso — 201:**
-```json
+
 {"id": 1, "placa": "ABC1D23", "entrada": "2026-10-05T14:00:00-03:00", "status": "aberto"}
-```
+
 
 **Critérios de aceite:**
 - CA1.1: Requisição com placa válida e sem `entrada` retorna 201 com `status: "aberto"` e `entrada` igual ao instante corrente (tolerância de ±2s).
@@ -39,7 +39,7 @@ Campo `entrada` (ISO-8601 com offset) é **opcional**. Quando presente, o bilhet
 **Endpoint:** `POST /bilhetes/{id}/encerramento`
 
 **Resposta de sucesso — 200:**
-```json
+
 {
   "id": 1,
   "placa": "ABC1D23",
@@ -48,7 +48,7 @@ Campo `entrada` (ISO-8601 com offset) é **opcional**. Quando presente, o bilhet
   "minutos": 95,
   "valor_centavos": 800
 }
-```
+
 
 **Regras de cálculo (variante: TARIFA=400¢/h, FRAÇÃO=30min, TETO=5000¢, TOLERÂNCIA=15min):**
 
@@ -61,16 +61,16 @@ Campo `entrada` (ISO-8601 com offset) é **opcional**. Quando presente, o bilhet
 4. Aplica teto: `valor_centavos = min(valor_bruto, 5000)`.
 
 **Critérios de aceite:**
-- CA2.1: `id` inexistente retorna 404 `{"erro": "bilhete_nao_encontrado"}`.
-- CA2.2: Bilhete já encerrado retorna 409 `{"erro": "bilhete_ja_encerrado"}`.
-- CA2.3: Bilhete cancelado retorna 409 `{"erro": "bilhete_ja_encerrado"}` (estado final, não reencerra).
+- CA2.1: `id` inexistente retorna 404 {"erro": "bilhete_nao_encontrado"}.
+- CA2.2: Bilhete já encerrado retorna 409 {"erro": "bilhete_ja_encerrado"}.
+- CA2.3: Bilhete cancelado retorna 409 {"erro": "bilhete_ja_encerrado"} (estado final, não reencerra).
 - CA2.4: Duração de exatamente 15 minutos retorna `valor_centavos: 0` (dentro da tolerância).
 - CA2.5: Duração de 16 minutos → `fracoes = ceil(16/30) = 1` → `valor = 1 × 200 = 200` centavos.
 - CA2.6: Duração de exatamente 30 minutos → `fracoes = ceil(30/30) = 1` → `valor = 200` centavos.
 - CA2.7: Duração de 31 minutos → `fracoes = ceil(31/30) = 2` → `valor = 400` centavos.
 - CA2.8: Duração de 60 minutos → `fracoes = ceil(60/30) = 2` → `valor = 400` centavos.
-- CA2.9: Duração que geraria cobrança acima de 5000¢ retorna `valor_centavos: 5000`.
-- CA2.10: `valor_centavos` é sempre inteiro (`int`), nunca `float`.
+- CA2.9: Duração que geraria cobrança acima de 5000 retorna `valor_centavos: 5000`.
+- CA2.10: `valor_centavos` é sempre inteiro (int), nunca float.
 - CA2.11: `saida` é registrado com offset `-03:00`.
 - CA2.12: `minutos` reflete a duração real em minutos inteiros (ceil de segundos/60).
 - CA2.13: Duração de 0 minutos (entrada = saída) retorna `valor_centavos: 0` (dentro da tolerância).
@@ -82,12 +82,12 @@ Campo `entrada` (ISO-8601 com offset) é **opcional**. Quando presente, o bilhet
 **Endpoint:** `GET /bilhetes/ativos`
 
 **Resposta de sucesso — 200:**
-```json
+
 [
   {"id": 3, "placa": "XYZ9A99", "entrada": "2026-10-05T15:00:00-03:00", "status": "aberto"},
   {"id": 1, "placa": "ABC1D23", "entrada": "2026-10-05T14:00:00-03:00", "status": "aberto"}
 ]
-```
+
 
 **Critérios de aceite:**
 - CA3.1: Retorna apenas bilhetes com `status: "aberto"`.
@@ -102,19 +102,19 @@ Campo `entrada` (ISO-8601 com offset) é **opcional**. Quando presente, o bilhet
 **Endpoint:** `GET /relatorios/diario?data=AAAA-MM-DD`
 
 **Resposta de sucesso — 200:**
-```json
+
 {
   "data": "2026-10-05",
   "total_bilhetes": 12,
   "faturamento_centavos": 8400,
   "tempo_medio_minutos": 47
 }
-```
+
 
 **Regras:**
 - `total_bilhetes`: contagem de bilhetes **encerrados** cuja `saida` cai na data consultada.
 - `faturamento_centavos`: soma dos `valor_centavos` dos bilhetes encerrados no dia.
-- `tempo_medio_minutos`: média dos `minutos` dos bilhetes encerrados no dia, arredondando **0,5 para cima** (half-up). Bilhetes cancelados **não** entram no cálculo.
+- `tempo_medio_minutos`: média dos `minutos` dos bilhetes encerrados no dia, arredondando **0,5 para cima**. Bilhetes cancelados **NÃO** entram no cálculo.
 
 **Critérios de aceite:**
 - CA4.1: `data` fora do formato `AAAA-MM-DD` retorna 422 `{"erro": "data_invalida"}`.
@@ -131,9 +131,9 @@ Campo `entrada` (ISO-8601 com offset) é **opcional**. Quando presente, o bilhet
 **Endpoint:** `POST /bilhetes/{id}/cancelamento`
 
 **Resposta de sucesso — 200:**
-```json
+
 {"id": 1, "placa": "ABC1D23", "entrada": "2026-10-05T14:00:00-03:00", "status": "cancelado"}
-```
+
 
 **Regras:**
 - Somente bilhetes **abertos** podem ser cancelados.
